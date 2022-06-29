@@ -8,6 +8,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    favoritos = db.relationship('Favoritos', backref='user', lazy=True)
 
     def __repr__(self):
         return '<User %r>' % self.id
@@ -20,7 +21,7 @@ class User(db.Model):
         }
 
 class Personajes(db.Model):
-    __tablename__ = 'Personajes'
+    __tablename__ = 'personajes'
     id = db.Column(db.Integer, primary_key=True)
     nombre_personaje = db.Column(db.String(100), unique=True, nullable=False)
     edad = db.Column(db.Integer, nullable=False)
@@ -28,6 +29,8 @@ class Personajes(db.Model):
     color_ojos =  db.Column(db.String(50), nullable=False)
     color_cabello = db.Column(db.String(50), nullable=False)
     altura = db.Column(db.String(20), nullable=False)
+    favoritos = db.relationship('Favoritos', backref='personajes', lazy=True)
+
 
     def __repr__(self):
         return '<Personajes %r>' % self.nombre_personaje
@@ -46,7 +49,7 @@ class Personajes(db.Model):
 
     
 class Planets (db.Model):
-    __tablename__ = 'Planets'
+    __tablename__ = 'planets'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100),nullable=False)
     clima = db.Column(db.String(50),nullable=False)
@@ -55,6 +58,7 @@ class Planets (db.Model):
     población= db.Column(db.String(250),nullable=False)
     periodo_orbital= db.Column(db.String(250),nullable=False)
     diametro= db.Column(db.String(250),nullable=False)
+    favoritos = db.relationship('Favoritos', backref='planets', lazy=True)
 
     def __repr__(self):
         return '<Planets %r>' % self.id
@@ -65,18 +69,19 @@ class Planets (db.Model):
             "nombre": self.nombre,
             "clima": self.climate,
             "terreno": self.terrain,
-            "rotación": self.rotation,
-            "población": self.population,
+            "rotacion": self.rotation,
+            "poblacion": self.population,
             "periodo_orbital": self.orbital_Period,
             "diametro": self.diameter
             # do not serialize the password, its a security breach
         }
 
 class Vehiculos (db.Model):
-    __tablename__ = 'Vehiculos'
+    __tablename__ = 'vehiculos'
     id = db.Column(db.Integer, primary_key=True,nullable=False)
     name_Vehicles = db.Column(db.String(50),nullable=False)
     model = db.Column(db.String(50),nullable=False)
+    favoritos = db.relationship('Favoritos', backref='vehiculos', lazy=True)
 
     def __repr__(self):
         return '<Vehiculos %r>' % self.id
@@ -89,10 +94,12 @@ class Vehiculos (db.Model):
             # do not serialize the password, its a security breach
         }
 class Favoritos (db.Model):
-    __tablename__ = 'Favoritos'
+    __tablename__ = 'favoritos'
     id = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(db.String(250))
-    items = db.Column(db.Integer)
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    id_planetas = db.Column(db.Integer, db.ForeignKey('planets.id'))
+    id_Vehiculos = db.Column(db.Integer, db.ForeignKey('vehiculos.id'))
+    id_personajes = db.Column(db.Integer, db.ForeignKey('personajes.id'))
 
     def __repr__(self):
         return '<Favoritos %r>' % self.id
